@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mesa</class>
+ <widget class="QMainWindow" name="mesa">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1048</width>
+    <height>690</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Blackjack</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="btnVOLVER">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>620</y>
+      <width>91</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string>Salir</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>420</y>
+      <width>401</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout"/>
+   </widget>
+   <widget class="QPushButton" name="btnPLANTARSE">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>560</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string>Plantarse</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnPEDIR">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>560</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string>Pedir</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalWidget_2" native="true">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>130</y>
+      <width>401</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="layoutCartasCrupier"/>
+   </widget>
+   <widget class="QLabel" name="labelResultado">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>360</y>
+      <width>180</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnVolverAJugar">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>460</y>
+      <width>121</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string>Volver a Jugar</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelValorJugador">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>370</y>
+      <width>171</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelValorCrupier">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>260</y>
+      <width>171</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_CROUPIER">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>100</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CROUPIER</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_JUGADOR">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>380</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>JUGADOR</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelPuntajeJugador">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>380</y>
+      <width>49</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Puntaje: </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelPuntajeCroupier">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>100</y>
+      <width>49</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Puntaje: </string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>390</y>
+      <width>196</width>
+      <height>240</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelmakeBet">
+       <property name="styleSheet">
+        <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+       </property>
+       <property name="text">
+        <string>Por favor, realice una apuesta</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="btnREPARTIR">
+       <property name="styleSheet">
+        <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+       </property>
+       <property name="text">
+        <string>Repartir Cartas</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="3" column="0">
+          <widget class="QPushButton" name="btnApostar">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+           </property>
+           <property name="text">
+            <string>Apostar</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLineEdit" name="lineEditApuesta">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelApuesta">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::WinPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Plain</enum>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelSaldo">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::WinPanel</enum>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="labelApuestaInvalida">
+           <property name="styleSheet">
+            <string notr="true">background-image: url(':/imagenes/fondos/b1.png');
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;</string>
+           </property>
+           <property name="text">
+            <string>Apuesta invälida
+Intentelo nuevamente</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1048</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,45 @@
+# ninja log v6
+5	945	7549954886751578	Proyecto1_autogen/timestamp	6d4839aba98a2c67
+5	945	7549954886751578	Proyecto1_autogen/mocs_compilation.cpp	6d4839aba98a2c67
+5	945	7549954886751578	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/timestamp	6d4839aba98a2c67
+5	945	7549954886751578	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/mocs_compilation.cpp	6d4839aba98a2c67
+950	1185	7549954889956369	Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	834603f97b528e98
+950	1185	7549954889956369	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	834603f97b528e98
+1199	2110	7549954890185766	CMakeFiles/Proyecto1.dir/carta.cpp.obj	50dcddbd791938b6
+1202	2420	7549954890215684	CMakeFiles/Proyecto1.dir/jugador.cpp.obj	d86233a9bfd877cf
+1196	2613	7549954890165805	CMakeFiles/Proyecto1.dir/mazo.cpp.obj	22067277c5bd23c5
+1204	3598	7549954890245599	CMakeFiles/Proyecto1.dir/crupier.cpp.obj	3987b16f0203c56b
+1191	4276	7549954890115940	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	15815f9092fc591f
+1188	4290	7549954890086324	CMakeFiles/Proyecto1.dir/main.cpp.obj	7c15c9d3af309043
+1185	4349	7549954890056108	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/mocs_compilation.cpp.obj	83d64cff634e1bfb
+1193	4804	7549954890135889	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b7947d9f7fa2a3c5
+2111	8911	7549954899307959	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp.obj	c8f35088bc94ecc
+8911	9208	7549954967314410	Proyecto1.exe	bd31c268dd20b734
+21	85	7549955381461342	CMakeFiles/clean.additional	bc355cdfcf0d3a12
+85	95	7549955382099635	clean	e259219f19886716
+12	34	7549955395812615	CMakeFiles/clean.additional	bc355cdfcf0d3a12
+34	42	7549955396032035	clean	e259219f19886716
+19	967	7549955806181319	Proyecto1_autogen/timestamp	6d4839aba98a2c67
+19	967	7549955806181319	Proyecto1_autogen/mocs_compilation.cpp	6d4839aba98a2c67
+19	967	7549955806181319	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/timestamp	6d4839aba98a2c67
+19	967	7549955806181319	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/mocs_compilation.cpp	6d4839aba98a2c67
+968	1214	7549955809529684	Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	834603f97b528e98
+968	1214	7549955809529684	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	834603f97b528e98
+1228	2229	7549955809759083	CMakeFiles/Proyecto1.dir/carta.cpp.obj	50dcddbd791938b6
+1231	2715	7549955809789010	CMakeFiles/Proyecto1.dir/jugador.cpp.obj	d86233a9bfd877cf
+1225	2801	7549955809729168	CMakeFiles/Proyecto1.dir/mazo.cpp.obj	22067277c5bd23c5
+1234	4520	7549955809818914	CMakeFiles/Proyecto1.dir/crupier.cpp.obj	3987b16f0203c56b
+1214	4685	7549955809619447	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/mocs_compilation.cpp.obj	83d64cff634e1bfb
+1219	4727	7549955809679290	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	15815f9092fc591f
+1217	4953	7549955809649365	CMakeFiles/Proyecto1.dir/main.cpp.obj	7c15c9d3af309043
+1222	5662	7549955809699241	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b7947d9f7fa2a3c5
+2229	9537	7549955819769755	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp.obj	c8f35088bc94ecc
+9537	9835	7549955892847868	Proyecto1.exe	bd31c268dd20b734
+2309	7133	7550322021686183	Proyecto1.exe	bd31c268dd20b734
+19	364	7550322620567383	Proyecto1_autogen/timestamp	6d4839aba98a2c67
+19	364	7550322620567383	Proyecto1_autogen/mocs_compilation.cpp	6d4839aba98a2c67
+19	364	7550322620567383	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/timestamp	6d4839aba98a2c67
+19	364	7550322620567383	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Release/Proyecto1_autogen/mocs_compilation.cpp	6d4839aba98a2c67
+365	4308	7550322623812203	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	15815f9092fc591f
+368	4563	7550322623832431	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b7947d9f7fa2a3c5
+4563	4843	7550322665788321	Proyecto1.exe	bd31c268dd20b734

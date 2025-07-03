@@ -1,0 +1,42 @@
+# ninja log v6
+29	370	7547973872905025	Proyecto1_autogen/timestamp	7686e65359ef7e35
+29	370	7547973872905025	Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+68	93	7547351762112179	clean	a5f7a5329c327a7
+29	370	7547973872905025	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/timestamp	7686e65359ef7e35
+19	1247	7547380590638994	build.ninja	5bf1d56f00ea92d1
+29	370	7547973872905025	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+2222	3439	7547399600929046	CMakeFiles/Proyecto1.dir/carta.cpp.obj	aef297b23408f520
+415	2602	7547962711755156	CMakeFiles/Proyecto1.dir/crupier.cpp.obj	c334164d8b829e18
+411	1611	7547960527916407	CMakeFiles/Proyecto1.dir/jugador.cpp.obj	2c54a62ab92adc34
+2201	4021	7547399600719042	CMakeFiles/Proyecto1.dir/mazo.cpp.obj	eb6bb40c1c34cba0
+2666	5619	7547973366754838	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/mocs_compilation.cpp.obj	edc7c395c1261845
+1935	2128	7547399599859000	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	d8dc2c7489606438
+2683	5623	7547973366924796	CMakeFiles/Proyecto1.dir/main.cpp.obj	c2b1c576bd2f1e98
+372	3008	7547973876334980	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	2bf4229dec405c0d
+389	3266	7547973876514985	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b06c1272dfdb669a
+3266	3487	7547973905274273	Proyecto1.exe	acc373dbaf3fea8d
+1935	2128	7547399599859000	Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	d8dc2c7489606438
+2291	3868	7547399601619089	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp.obj	98ba970e22478366
+13	71	7547399521047439	CMakeFiles/clean.additional	a093aad2fc2a3f75
+28	378	7547978327851748	Proyecto1_autogen/timestamp	7686e65359ef7e35
+28	378	7547978327851748	Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+28	378	7547978327851748	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/timestamp	7686e65359ef7e35
+28	378	7547978327851748	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+380	2866	7547978331371456	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	2bf4229dec405c0d
+401	3133	7547978331571437	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b06c1272dfdb669a
+3133	3347	7547978358890727	Proyecto1.exe	acc373dbaf3fea8d
+33	375	7547982657784128	Proyecto1_autogen/timestamp	7686e65359ef7e35
+33	375	7547982657784128	Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+33	375	7547982657784128	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/timestamp	7686e65359ef7e35
+33	375	7547982657784128	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+377	2958	7547982661214067	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	2bf4229dec405c0d
+390	3230	7547982661354191	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b06c1272dfdb669a
+3230	3446	7547982689753462	Proyecto1.exe	acc373dbaf3fea8d
+31	380	7547984688020964	Proyecto1_autogen/timestamp	7686e65359ef7e35
+31	380	7547984688020964	Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+31	380	7547984688020964	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/timestamp	7686e65359ef7e35
+31	380	7547984688020964	C:/Users/Alan Montero/Downloads/proyecto_seminario/Proyecto1/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	7686e65359ef7e35
+421	1763	7547984691912669	CMakeFiles/Proyecto1.dir/mazo.cpp.obj	eb6bb40c1c34cba0
+381	3056	7547984691522688	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	2bf4229dec405c0d
+399	3319	7547984691692689	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	b06c1272dfdb669a
+3320	3534	7547984720901244	Proyecto1.exe	acc373dbaf3fea8d

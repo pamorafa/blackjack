@@ -1,0 +1,19 @@
+# ninja log v6
+13	210	7549952287094457	Proyecto1_autogen/timestamp	5ae5b0ec37d9d493
+13	210	7549952287094457	Proyecto1_autogen/mocs_compilation.cpp	5ae5b0ec37d9d493
+13	210	7549952287094457	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/Proyecto1_autogen/timestamp	5ae5b0ec37d9d493
+13	210	7549952287094457	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	5ae5b0ec37d9d493
+256	538	7549942534608318	Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	942f9a830a71d26d
+256	538	7549942534608318	D:/Nueva carpeta/MOD2/Proyecto1/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	942f9a830a71d26d
+2811	3659	7549927385274737	CMakeFiles/Proyecto1.dir/carta.cpp.obj	960549cca4148de9
+2813	4015	7549927385304657	CMakeFiles/Proyecto1.dir/jugador.cpp.obj	26376fb9c97b226b
+2808	4092	7549927385254794	CMakeFiles/Proyecto1.dir/mazo.cpp.obj	afb9f3228e3a1f82
+544	7025	7549942534767900	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp.obj	f8c0e1b28fd1c069
+1412	4890	7549945562385059	CMakeFiles/Proyecto1.dir/main.cpp.obj	aadceb5a1a3d97e3
+2816	5758	7549927385334592	CMakeFiles/Proyecto1.dir/crupier.cpp.obj	2d578fae834a0203
+214	4528	7549952289109075	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	e04df8b70d250810
+1409	4558	7549945562349979	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/mocs_compilation.cpp.obj	4619979bc8643dab
+210	4121	7549952289069184	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	58e44f61bfc76804
+4528	5523	7549952332252829	Proyecto1.exe	bbc68b62669e45d
+11	31	7549927155934092	CMakeFiles/clean.additional	381cf0fe9dd85e02
+39	81	7549852642855470	clean	e259219f19886716

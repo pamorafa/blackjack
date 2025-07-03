@@ -1,13 +1,28 @@
 #include "carta.h"
 
-Carta::Carta(int valor, const std::string &palo) : valor(valor), palo(palo) {}
+Carta::Carta(int valor, Palo palo) : valor(valor), palo(palo) {}
 
 int Carta::getValor() const {
     return valor;
 }
 
-std::string Carta::getPalo() const {
+Carta::Palo Carta::getPalo() const {
     return palo;
+}
+
+std::string Carta::getPaloStr() const {
+    switch (palo) {
+        case Palo::CORAZONES:
+            return "Corazones";
+        case Palo::DIAMANTES:
+            return "Diamantes";
+        case Palo::TREBOLES:
+            return "Treboles";
+        case Palo::PICAS:
+            return "Picas";
+        default:
+            return "Desconocido";
+    }
 }
 
 // Representación textual de la carta
@@ -25,5 +40,5 @@ std::string Carta::toString() const {
     } else {
         valorStr = std::to_string(valor);
     }
-    return valorStr + " de " + palo;
+    return valorStr + " de " + getPaloStr();
 }

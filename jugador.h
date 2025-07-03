@@ -15,10 +15,13 @@ public:
     int calcularPuntaje() const;
     void apostar(int cantidad);
     void reiniciarMano();
+    void limpiarMano();        // Limpia la mano sin afectar otros estados
 
     void ganarApuesta();       // Recupera 2 veces la apuesta
-    void ganarBlackJack();
+    void ganarBlackJack();     // Recupera 2.5 veces la apuesta para blackjack
     void recuperarApuesta();   // Recupera la apuesta en caso de empate
+    bool doblarApuesta();      // Dobla la apuesta actual (double down)
+    bool puedeDobleApuesta() const; // Verifica si el jugador puede doblar su apuesta
 
     std::string getNombre() const;
     int getSaldo() const;

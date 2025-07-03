@@ -1,0 +1,24 @@
+# ninja log v6
+19	865	7732766204419465	Proyecto1_autogen/timestamp	36915d6f339c89ce
+19	865	7732766204419465	Proyecto1_autogen/mocs_compilation.cpp	36915d6f339c89ce
+884	3558	7732766205523757	CMakeFiles/Proyecto1.dir/jugador.cpp.obj	fcfcffac4cefa89
+2117	2409	7732727862497142	C:/Users/Pablo/Desktop/blackjack/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	16e19b896d634f15
+19	865	7732766204419465	C:/Users/Pablo/Desktop/blackjack/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/Proyecto1_autogen/timestamp	36915d6f339c89ce
+900	1915	7732734568501590	CMakeFiles/Proyecto1.dir/carta.cpp.obj	dc56c6b24eab623f
+19	865	7732766204419465	C:/Users/Pablo/Desktop/blackjack/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	36915d6f339c89ce
+2117	2409	7732727862497142	Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp	16e19b896d634f15
+880	2007	7732766205493831	CMakeFiles/Proyecto1.dir/mazo.cpp.obj	8695c5d9736913c2
+887	3576	7732766205558916	CMakeFiles/Proyecto1.dir/crupier.cpp.obj	32c721bda1e628a0
+870	4473	7732766205384097	CMakeFiles/Proyecto1.dir/main.cpp.obj	b781254e2a20daec
+867	4398	7732766205348257	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/mocs_compilation.cpp.obj	f5cecaa8f089d468
+873	4557	7732766205414620	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	78dedfc5b8f569f4
+175	3361	7732761444106553	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	88506381beb15ebd
+3141	10483	7732727869941800	CMakeFiles/Proyecto1.dir/Proyecto1_autogen/EWIEGA46WW/qrc_resource.cpp.obj	643967f1ea66a919
+3362	3815	7732761475972785	Proyecto1.exe	abb9ab7927735e8b
+16	179	7732778979252414	Proyecto1_autogen/timestamp	36915d6f339c89ce
+16	179	7732778979252414	Proyecto1_autogen/mocs_compilation.cpp	36915d6f339c89ce
+16	179	7732778979252414	C:/Users/Pablo/Desktop/blackjack/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/Proyecto1_autogen/timestamp	36915d6f339c89ce
+16	179	7732778979252414	C:/Users/Pablo/Desktop/blackjack/build/Desktop_Qt_6_9_1_MinGW_64_bit-Debug/Proyecto1_autogen/mocs_compilation.cpp	36915d6f339c89ce
+180	2724	7732778980884513	CMakeFiles/Proyecto1.dir/mainwindow.cpp.obj	78dedfc5b8f569f4
+183	3488	7732778980920622	CMakeFiles/Proyecto1.dir/mesa.cpp.obj	88506381beb15ebd
+3488	3957	7732779013978494	Proyecto1.exe	abb9ab7927735e8b

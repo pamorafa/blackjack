@@ -13,6 +13,7 @@ public:
     void barajar();
     Carta repartirCarta();
     void resetear();
+    void reiniciar();
 private:
     std::vector<Carta> cartas;
 };

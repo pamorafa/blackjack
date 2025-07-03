@@ -23,11 +23,17 @@ Carta Mazo::repartirCarta() {
 
 void Mazo::resetear() {
     cartas.clear(); // Vacía el vector antes de recrear las cartas
-    std::vector<std::string> palos = {"Corazones", "Diamantes", "Treboles", "Picas"};
-
-    for (const auto& palo : palos) {
-        for (int valor = 1; valor <= 13; ++valor) {
-            cartas.emplace_back(valor, palo); // Crea cartas del 1 al 13 para cada palo
-        }
+    
+    // Crear cartas para cada palo
+    for (int valor = 1; valor <= 13; ++valor) {
+        cartas.emplace_back(valor, Carta::Palo::CORAZONES);
+        cartas.emplace_back(valor, Carta::Palo::DIAMANTES);
+        cartas.emplace_back(valor, Carta::Palo::TREBOLES);
+        cartas.emplace_back(valor, Carta::Palo::PICAS);
     }
+}
+
+// Alias de resetear para mantener consistencia
+void Mazo::reiniciar() {
+    resetear();
 }

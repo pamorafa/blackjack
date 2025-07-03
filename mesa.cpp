@@ -14,16 +14,16 @@
 mesa::mesa(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::mesa)
-    , mazo(nullptr)
-    , jugador(new Jugador("Jugador 1", 10000))  // Inicializa el jugador con 10000 de saldo
-    , crupier(nullptr)
+    , mazo(std::make_unique<Mazo>())
+    , jugador(std::make_unique<Jugador>("Jugador 1", 10000))
+    , crupier(std::make_unique<Crupier>())
+    , timerReparto(new QTimer(this))
+    , etapaReparto(0)
 {
     ui->setupUi(this);
     this->setWindowIcon(QIcon(":/imagenes/icon/icon.png"));
     // Establecer tamaño fijo para la ventana
     this->setFixedSize(924, 683);
-
-
 
     this->menuBar()->setVisible(false);  // Oculta la barra de menú
     this->statusBar()->setVisible(false);  // Oculta la barra de estado
@@ -33,8 +33,20 @@ mesa::mesa(QWidget *parent)
     ui->label_JUGADOR->setVisible(false);
     ui->btnPEDIR->setVisible(false);
     ui->btnPLANTARSE->setVisible(false);
-
-
+    ui->btnREPARTIR->setVisible(false);  // Ocultar el botón de repartir cartas desde el inicio
+    
+    // Crear el botón DOBLAR programáticamente
+    QPushButton* btnDoblar = new QPushButton("DOBLAR", this);
+    btnDoblar->setObjectName("btnDOBLAR");
+    // Posicionar el botón junto a los otros botones de juego
+    btnDoblar->setGeometry(ui->btnPLANTARSE->geometry().x() + ui->btnPLANTARSE->width() + 10, 
+                          ui->btnPLANTARSE->geometry().y(),
+                          ui->btnPLANTARSE->width(), 
+                          ui->btnPLANTARSE->height());
+    btnDoblar->setVisible(false);
+    // Conectar el botón a su slot
+    connect(btnDoblar, &QPushButton::clicked, this, &mesa::on_btnDOBLAR_clicked);
+    
     // Establecer el fondo desde mesa.cpp
     this->setStyleSheet(
         "QMainWindow {"
@@ -164,6 +176,7 @@ mesa::mesa(QWidget *parent)
     ui->btnPEDIR->setStyleSheet(buttonStyle);
     ui->btnPLANTARSE->setStyleSheet(buttonStyle);
     ui->btnVolverAJugar->setStyleSheet(buttonStyle);
+    btnDoblar->setStyleSheet(buttonStyle);  // Aplicar estilo al botón de doblar
 
 
 
@@ -179,33 +192,36 @@ mesa::mesa(QWidget *parent)
     ui->labelValorCrupier->setVisible(false);
     ui->labelValorJugador->setVisible(false);
 
-    mazo = new Mazo();
-    jugador = new Jugador("Jugador", 10000);
-    crupier = new Crupier();
-
     // Barajar el mazo al inicio
     mazo->barajar();
 
     actualizarSaldoYapuesta();
 
+    // Conectar el timer para la animación de reparto
+    connect(timerReparto, &QTimer::timeout, this, &mesa::repartirSiguienteCarta);
 }
 
 mesa::~mesa()
 {
     delete ui;
-    delete mazo;
-    delete jugador;
-    delete crupier;
+    // No es necesario eliminar manualmente los objetos gestionados por smart pointers
+    if (timerReparto->isActive()) {
+        timerReparto->stop();
+    }
 }
 
-void mesa::actualizarSaldoYapuesta()
-{
-    if (labelSaldo && labelApuesta) {  // Verificar que las etiquetas existan
-        labelSaldo->setText("Saldo: $ " + QLocale(QLocale::Spanish, QLocale::Chile).toString(jugador->getSaldo()));
-        labelApuesta->setText("Apuesta: $ " + QLocale(QLocale::Spanish, QLocale::Chile).toString(jugador->getApuesta()));
-    } else {
-        qDebug() << "Error: Las etiquetas no están inicializadas correctamente.";
-    }
+void mesa::actualizarSaldoYapuesta() {
+    int saldoActual = jugador->getSaldo();
+    int apuestaActual = jugador->getApuesta();
+    
+    qDebug() << "Actualizando UI - Saldo: " << saldoActual << ", Apuesta: " << apuestaActual;
+    
+    // Actualizar las etiquetas de la interfaz
+    ui->labelSaldo->setText("SALDO: " + QString::number(saldoActual) + " €");
+    ui->labelApuesta->setText("APUESTA: " + QString::number(apuestaActual) + " €");
+    
+    // Habilitar o deshabilitar el botón de apostar según el saldo disponible
+    ui->btnApostar->setEnabled(saldoActual > 0);
 }
 
 
@@ -225,11 +241,27 @@ void mesa::on_btnApostar_clicked()
     if (ok && apuesta > 0 && apuesta <= jugador->getSaldo()) {
         ui->labelApuestaInvalida->setVisible(false);
         ui->lineEditApuesta->setText("");
-        ui->btnApostar->setVisible(false);
+        ui->lineEditApuesta->setVisible(false);  // Ocultar el campo de entrada de apuesta
+        ui->btnApostar->setVisible(false);       // Ocultar el botón de apostar
+        ui->btnREPARTIR->setVisible(false);      // Ocultar el botón de repartir
+        ui->labelmakeBet->setVisible(false);     // Ocultar el mensaje de apuesta
+        
         try {
-            jugador->apostar(apuesta);  // Llamada al método apostar
-            actualizarSaldoYapuesta();  // Actualizar los QLabel con los nuevos valores
-            ui->labelmakeBet->setVisible(false);
+            // Reiniciar manos antes de comenzar una nueva ronda
+            jugador->reiniciarMano();
+            crupier->reiniciarMano();
+            
+            // Realizar la apuesta
+            jugador->apostar(apuesta);
+            
+            // Actualizar la interfaz con el nuevo saldo y apuesta
+            actualizarSaldoYapuesta();
+            
+            qDebug() << "Apuesta realizada: " << apuesta << ", Saldo restante: " << jugador->getSaldo();
+            
+            // Repartir cartas automáticamente
+            repartirCartasConAnimacion();
+            
         } catch (const std::invalid_argument &e) {
             // Mostrar un mensaje de advertencia con un flujo controlado
             QMessageBox msgBox;
@@ -240,7 +272,11 @@ void mesa::on_btnApostar_clicked()
                                  "QPushButton { background-color: lightgray; border: 1px solid black; }");
             msgBox.exec();
 
-            // Detenemos el flujo, pero no cerramos el juego
+            // Mostrar nuevamente los elementos para apostar
+            ui->lineEditApuesta->setVisible(true);
+            ui->btnApostar->setVisible(true);
+            ui->labelmakeBet->setVisible(true);
+            
             return;
         }
     } else {
@@ -249,27 +285,59 @@ void mesa::on_btnApostar_clicked()
     }
 }
 
+// Reinicia el juego para una nueva ronda
 void mesa::reiniciarJuego() {
-    qDebug() << "Reiniciando juego...";
-    jugador->reiniciarMano(); // Reinicia la mano del jugador
-    crupier->reiniciarMano(); // Reinicia la mano del crupier
-    mazo->resetear();         // Resetea el mazo
-
-    // Ocultar elementos al reiniciar
+    qDebug() << "Reiniciando juego - Estado antes: Saldo=" << jugador->getSaldo() << ", Apuesta=" << jugador->getApuesta();
+    
+    // Limpiar las manos
+    jugador->limpiarMano();
+    crupier->limpiarMano();
+    
+    // Limpiar las etiquetas de cartas
+    for (auto label : cartaLabels) {
+        if (label) {
+            label->clear();
+            label->setVisible(false);
+            delete label;
+        }
+    }
+    cartaLabels.clear();
+    
+    for (auto label : cartaLabelsCrupier) {
+        if (label) {
+            label->clear();
+            label->setVisible(false);
+            delete label;
+        }
+    }
+    cartaLabelsCrupier.clear();
+    
+    // Reiniciar el mazo
+    mazo->reiniciar();
+    mazo->barajar();
+    
+    // Ocultar elementos de juego
     ui->labelPuntajeJugador->setVisible(false);
     ui->labelPuntajeCroupier->setVisible(false);
-    ui->label_CROUPIER->setVisible(false);
     ui->label_JUGADOR->setVisible(false);
+    ui->label_CROUPIER->setVisible(false);
+    ui->labelValorJugador->setVisible(false);
+    ui->labelValorCrupier->setVisible(false);
+    
+    // Ocultar botones de juego
     ui->btnPEDIR->setVisible(false);
     ui->btnPLANTARSE->setVisible(false);
-
-    ui->labelResultado->setVisible(false); // Ocultar el resultado
-    ui->btnVolverAJugar->setVisible(false);
-
-    // Actualizar la interfaz
-    actualizarMano();
-    mostrarCartasCrupier();
-    actualizarSaldoYapuesta();
+    
+    // Ocultar el botón de doblar
+    QPushButton* btnDoblar = findChild<QPushButton*>("btnDOBLAR");
+    if (btnDoblar) {
+        btnDoblar->setVisible(false);
+    }
+    
+    // Restablecer etapa de reparto
+    etapaReparto = 0;
+    
+    qDebug() << "Juego reiniciado - Estado después: Saldo=" << jugador->getSaldo() << ", Apuesta=" << jugador->getApuesta();
 }
 
 
@@ -277,6 +345,12 @@ void mesa::reiniciarJuego() {
 void mesa::on_btnPEDIR_clicked() {
     jugador->pedirCarta(*mazo);      // El jugador pide una carta
     actualizarMano();               // Actualiza las cartas en la interfaz
+    
+    // Ocultar el botón de doblar después de pedir una carta
+    QPushButton* btnDoblar = findChild<QPushButton*>("btnDOBLAR");
+    if (btnDoblar) {
+        btnDoblar->setVisible(false);
+    }
 
     // Actualizar el puntaje total del jugador
     ui->labelPuntajeJugador->setText("Puntaje: " + QString::number(jugador->calcularPuntaje()));
@@ -295,44 +369,123 @@ void mesa::on_btnPLANTARSE_clicked() {
 }
 
 void mesa::turnoCrupier(bool BlackJack) {
-    // Revelar la segunda carta del crupier
-    revelarSegundaCartaCrupier();
-
-    // Mostrar todas las cartas del crupier
-    mostrarCartasCrupier();
-
-    // Lógica del crupier para pedir cartas
-    while (crupier->calcularPuntaje() < 17 && jugador->calcularPuntaje() <= 21 && !BlackJack) {
-        crupier->pedirCarta(*mazo);
-        mostrarCartasCrupier(); // Actualiza la visualización con las nuevas cartas
+    // Ocultar los botones de juego
+    ui->btnPEDIR->setVisible(false);
+    ui->btnPLANTARSE->setVisible(false);
+    
+    QPushButton* btnDoblar = findChild<QPushButton*>("btnDOBLAR");
+    if (btnDoblar) {
+        btnDoblar->setVisible(false);
     }
+    
+    // Revelar la segunda carta del crupier con animación
+    QTimer::singleShot(1000, this, [this, BlackJack]() {
+        revelarSegundaCartaCrupier();
+        
+        // Mostrar todas las cartas del crupier
+        mostrarCartasCrupier();
+        
+        // Lógica del crupier para pedir cartas con animación
+        if (jugador->calcularPuntaje() <= 21 && !BlackJack) {
+            pedirCartasCrupierConAnimacion();
+        } else {
+            mostrarResultado();
+        }
+    });
+}
 
+// Nuevo método para pedir cartas al crupier con animación
+void mesa::pedirCartasCrupierConAnimacion() {
+    // Si el crupier necesita pedir carta
+    if (crupier->calcularPuntaje() < 17) {
+        // Esperar 1 segundo y luego pedir carta
+        QTimer::singleShot(1000, this, [this]() {
+            crupier->pedirCarta(*mazo);
+            mostrarCartasCrupier();
+            
+            // Llamada recursiva para la siguiente carta si es necesario
+            pedirCartasCrupierConAnimacion();
+        });
+    } else {
+        // Si el crupier ya no necesita más cartas, mostrar el resultado
+        mostrarResultado();
+    }
+}
+
+// Nuevo método para mostrar el resultado del juego
+void mesa::mostrarResultado() {
+    // Ocultar los botones de juego
+    ui->btnPEDIR->setVisible(false);
+    ui->btnPLANTARSE->setVisible(false);
+    
+    // Ocultar el botón de doblar si existe
+    QPushButton* btnDoblar = findChild<QPushButton*>("btnDOBLAR");
+    if (btnDoblar) {
+        btnDoblar->setVisible(false);
+    }
+    
     // Resto de la lógica para decidir el resultado
     int puntajeJugador = jugador->calcularPuntaje();
     int puntajeCrupier = crupier->calcularPuntaje();
+    int apuestaActual = jugador->getApuesta();
+    int saldoAntes = jugador->getSaldo();
+    
+    qDebug() << "Mostrando resultado - Apuesta actual: " << apuestaActual << ", Saldo antes: " << saldoAntes;
+    qDebug() << "Puntuaciones - Jugador: " << puntajeJugador << ", Crupier: " << puntajeCrupier;
 
     QString resultado;
+    
+    // Caso 1: Jugador se pasa de 21 (pierde automáticamente)
     if (puntajeJugador > 21) {
         resultado = "Perdiste, superaste los 21";
-    } else if (BlackJack) {
-        resultado = "¡BlackJack!";
-        jugador->ganarBlackJack();
-    } else if ((puntajeCrupier > 21 || puntajeJugador > puntajeCrupier) && puntajeJugador <= 21) {
+        qDebug() << "Jugador pierde por pasarse de 21";
+    } 
+    // Caso 2: Jugador tiene Blackjack (21 con 2 cartas)
+    else if (puntajeJugador == 21 && jugador->getMano().size() == 2) {
+        // Si el crupier también tiene Blackjack, es empate
+        if (puntajeCrupier == 21 && crupier->getMano().size() == 2) {
+            resultado = "¡Empate con Blackjack!";
+            jugador->recuperarApuesta();
+            qDebug() << "Empate con Blackjack, saldo después: " << jugador->getSaldo();
+        } else {
+            resultado = "¡BlackJack!";
+            jugador->ganarBlackJack();
+            qDebug() << "Jugador gana con BlackJack, saldo después: " << jugador->getSaldo();
+        }
+    }
+    // Caso 3: Crupier se pasa de 21 (jugador gana)
+    else if (puntajeCrupier > 21) {
+        resultado = "¡Ganaste! El crupier se pasó de 21.\nTu Puntaje: " + QString::number(puntajeJugador) + "\nPuntaje del Crupier: " + QString::number(puntajeCrupier);
+        jugador->ganarApuesta();
+        qDebug() << "Jugador gana porque crupier se pasó, saldo después: " << jugador->getSaldo();
+    }
+    // Caso 4: Jugador tiene mayor puntaje que el crupier
+    else if (puntajeJugador > puntajeCrupier) {
         resultado = "¡Ganaste!\nTu Puntaje: " + QString::number(puntajeJugador) + "\nPuntaje del Crupier: " + QString::number(puntajeCrupier);
         jugador->ganarApuesta();
-    } else if (puntajeCrupier > puntajeJugador) {
+        qDebug() << "Jugador gana con mayor puntaje, saldo después: " << jugador->getSaldo();
+    }
+    // Caso 5: Crupier tiene mayor puntaje que el jugador
+    else if (puntajeCrupier > puntajeJugador) {
         resultado = "¡Perdiste!\nTu Puntaje: " + QString::number(puntajeJugador) + "\nPuntaje del Crupier: " + QString::number(puntajeCrupier);
-    } else {
+        qDebug() << "Jugador pierde contra el crupier";
+    }
+    // Caso 6: Empate
+    else {
         resultado = "¡Empate!\nTu Puntaje: " + QString::number(puntajeJugador) + "\nPuntaje del Crupier: " + QString::number(puntajeCrupier);
         jugador->recuperarApuesta();
+        qDebug() << "Empate, saldo después: " << jugador->getSaldo();
     }
 
     ui->labelResultado->setText(resultado);
     ui->labelResultado->setVisible(true);
     ui->btnVolverAJugar->setVisible(true);
+    
+    // Actualizar el saldo y apuesta
+    actualizarSaldoYapuesta();
+    
+    qDebug() << "Saldo final después de actualizar UI: " << jugador->getSaldo();
 }
-
-
 
 void mesa::mostrarCartasCrupier() {
     // Limpiar las etiquetas anteriores del crupier
@@ -346,32 +499,19 @@ void mesa::mostrarCartasCrupier() {
     layout->setSpacing(5);  // Espaciado entre las cartas
     layout->setContentsMargins(0, 0, 0, 0);  // Sin márgenes
 
-    // Tamaño máximo de las imágenes
-    const int maxWidth = 100;
-    const int maxHeight = 100;
-
     // Mostrar las cartas del crupier
     const auto& manoCrupier = crupier->getMano();
     for (const Carta& carta : manoCrupier) {
-        QString imagenRuta = obtenerRutaImagen(carta);  // Ruta de las imágenes ajustada
-        QPixmap pixmap(imagenRuta);
-        if (pixmap.isNull()) {
-            qDebug() << "Error al cargar la imagen:" << imagenRuta;
-        } else {
-            QPixmap scaledPixmap = pixmap.scaled(maxWidth, maxHeight, Qt::KeepAspectRatio);
-
-            QLabel* label = new QLabel(this);
-            label->setPixmap(scaledPixmap);  // Establecer la imagen escalada
-            label->setAlignment(Qt::AlignCenter);
-            layout->addWidget(label);
-            cartaLabelsCrupier.push_back(label);
-        }
+        QLabel* label = new QLabel(this);
+        label->setAlignment(Qt::AlignCenter);
+        mostrarCarta(carta, label);
+        layout->addWidget(label);
+        cartaLabelsCrupier.push_back(label);
     }
 
     // Crear un widget contenedor para el layout
     QWidget* container = new QWidget(this);
     container->setLayout(layout);
-
     container->setStyleSheet("background: transparent;");
 
     if (ui->layoutCartasCrupier->count() > 0) {
@@ -386,44 +526,8 @@ void mesa::mostrarCartasCrupier() {
 
     // Actualizar el puntaje total del crupier
     ui->labelPuntajeCroupier->setText("Puntaje: " + QString::number(crupier->calcularPuntaje()));
-}
-
-
-
-void mesa::on_btnREPARTIR_clicked() {
-    if (jugador->getApuesta() > 0) {
-        ui->labelmakeBet->setVisible(false);
-
-        mazo->barajar();
-
-        crupier->pedirCarta(*mazo);  // Primera carta al crupier (visible)
-        jugador->pedirCarta(*mazo);  // Primera carta al jugador (visible)
-        crupier->pedirCarta(*mazo);  // Segunda carta al crupier (oculta)
-        jugador->pedirCarta(*mazo);  // Segunda carta al jugador (visible)
-
-        actualizarMano();
-        mostrarPrimeraCartaCrupier();
-
-        ui->btnREPARTIR->setVisible(false);
-
-        // Mostrar elementos necesarios para la ronda
-        ui->labelPuntajeJugador->setVisible(true);
-        ui->labelPuntajeCroupier->setVisible(true);
-        ui->label_CROUPIER->setVisible(true);
-        ui->label_JUGADOR->setVisible(true);
-        ui->btnPEDIR->setVisible(true);
-        ui->btnPLANTARSE->setVisible(true);
-
-        // Actualizar puntajes iniciales
-        ui->labelPuntajeJugador->setText("Puntaje: " + QString::number(jugador->calcularPuntaje()));
-        ui->labelPuntajeCroupier->setText("Puntaje: " + QString::number(crupier->getMano().at(0).getValor()));
-
-        if(jugador->calcularPuntaje() == 21){
-            turnoCrupier(true);
-        }
-    } else {
-        ui->labelmakeBet->setVisible(true);
-    }
+    ui->labelPuntajeCroupier->setVisible(true);
+    ui->label_CROUPIER->setVisible(true);
 }
 
 
@@ -440,28 +544,21 @@ void mesa::mostrarPrimeraCartaCrupier() {
     layout->setSpacing(5);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    // Tamaño máximo de las imágenes
-    const int maxWidth = 100;
-    const int maxHeight = 100;
-
     const auto& manoCrupier = crupier->getMano();
 
     // Mostrar la primera carta del crupier
     if (!manoCrupier.empty()) {
-        QString imagenRuta = obtenerRutaImagen(manoCrupier[0]);  // Primera carta
-        QPixmap pixmap(imagenRuta);
-
         QLabel* label = new QLabel(this);
-        label->setPixmap(pixmap.scaled(maxWidth, maxHeight, Qt::KeepAspectRatio));
         label->setAlignment(Qt::AlignCenter);
+        mostrarCarta(manoCrupier[0], label);
         layout->addWidget(label);
         cartaLabelsCrupier.push_back(label);
     }
 
     // Agregar una carta oculta como marcador
     QLabel* cartaOculta = new QLabel(this);
-    cartaOculta->setPixmap(QPixmap(":/imagenes/fondos/back.png") // Imagen de carta oculta
-                               .scaled(maxWidth, maxHeight, Qt::KeepAspectRatio));
+    cartaOculta->setPixmap(QPixmap(":/imagenes/fondos/back.png")
+                               .scaled(80, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     cartaOculta->setAlignment(Qt::AlignCenter);
     layout->addWidget(cartaOculta);
     cartaLabelsCrupier.push_back(cartaOculta);
@@ -484,24 +581,29 @@ void mesa::mostrarPrimeraCartaCrupier() {
 
 
 QString mesa::obtenerRutaImagen(const Carta& carta) {
-    int valor = carta.getValor();  // Valor de la carta (1-10)
-    std::string palo = carta.getPalo(); // Palo de la carta
+    int valor = carta.getValor();  // Valor de la carta (1-13)
+    Carta::Palo palo = carta.getPalo(); // Palo de la carta
 
     // Mapear el palo a su rango correspondiente
     int baseValue = 0;
 
-    if (palo == "Picas") {
-        baseValue = 0;
-    } else if (palo == "Corazones") {
-        baseValue = 13;
-    } else if (palo == "Trebol") {
-        baseValue = 26;
-    } else if (palo == "Diamantes") {
-        baseValue = 39;
+    switch (palo) {
+        case Carta::Palo::PICAS:
+            baseValue = 0;
+            break;
+        case Carta::Palo::CORAZONES:
+            baseValue = 13;
+            break;
+        case Carta::Palo::TREBOLES:
+            baseValue = 26;
+            break;
+        case Carta::Palo::DIAMANTES:
+            baseValue = 39;
+            break;
     }
 
     // Ajustar el valor para obtener el índice final en la imagen
-    int index = baseValue + (valor - 1);  // Restar 1 porque los valores van de 1 a 10
+    int index = baseValue + (valor - 1);  // Restar 1 porque los valores van de 1 a 13
 
     // Construir la ruta de la imagen
     QString imagenRuta = ":/imagenes/cards/front-" + QString::number(index) + ".png";
@@ -513,54 +615,31 @@ QString mesa::obtenerRutaImagen(const Carta& carta) {
 void mesa::actualizarMano() {
     // Limpiar las etiquetas anteriores
     for (auto label : cartaLabels) {
-        label->deleteLater();
+        label->deleteLater();  // Eliminar etiquetas viejas
     }
-    cartaLabels.clear();
+    cartaLabels.clear();  // Limpiar el vector de etiquetas
 
     // Crear un layout horizontal para las cartas
     QHBoxLayout* layout = new QHBoxLayout();
-    layout->setSpacing(10);  // Espacio entre las cartas
-    layout->setContentsMargins(0, 0, 0, 0);
-
-    // Tamaño máximo de las imágenes
-    const int maxWidth = 100;
-    const int maxHeight = 100;
+    layout->setSpacing(5);  // Espaciado entre las cartas
+    layout->setContentsMargins(0, 0, 0, 0);  // Sin márgenes
 
     // Mostrar las cartas del jugador
-    for (const Carta& carta : jugador->getMano()) {
-        QString imagenRuta = obtenerRutaImagen(carta);  // Llamamos a la función que ajusta la imagen
-
-        QPixmap pixmap(imagenRuta);
-        if (pixmap.isNull()) {
-            qDebug() << "Error al cargar la imagen:" << imagenRuta;
-        } else {
-            QPixmap scaledPixmap = pixmap.scaled(maxWidth, maxHeight, Qt::KeepAspectRatio);
-
-            QLabel* label = new QLabel(this);
-            label->setPixmap(scaledPixmap);
-            label->setAlignment(Qt::AlignCenter);
-            layout->addWidget(label);
-            cartaLabels.push_back(label);
-        }
+    const auto& manoJugador = jugador->getMano();
+    for (const Carta& carta : manoJugador) {
+        QLabel* label = new QLabel(this);
+        label->setAlignment(Qt::AlignCenter);
+        mostrarCarta(carta, label);
+        layout->addWidget(label);
+        cartaLabels.push_back(label);
     }
 
     // Crear un widget contenedor para el layout
     QWidget* container = new QWidget(this);
     container->setLayout(layout);
 
-    // Establecer color de fondo gris para el contenedor
     container->setStyleSheet("background: transparent;");
 
-    // Crear un QScrollArea y agregar el contenedor con el layout
-    QScrollArea* scrollArea = new QScrollArea(this);
-    scrollArea->setWidget(container);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setStyleSheet("background: transparent; border: none;");
-
-
-    // Asegurarse de que no haya un nuevo QScrollArea creado cada vez
     if (ui->verticalLayout->count() > 0) {
         QLayoutItem* item = ui->verticalLayout->takeAt(0);
         if (item->widget()) {
@@ -568,36 +647,205 @@ void mesa::actualizarMano() {
         }
     }
 
-    // Agregar el QScrollArea al layout principal de la ventana
-    ui->verticalLayout->addWidget(scrollArea);
-
-    // Ajuste de tamaño
+    ui->verticalLayout->addWidget(container);
     container->adjustSize();
+
+    // Mostrar el puntaje del jugador
+    ui->labelPuntajeJugador->setText("Puntaje: " + QString::number(jugador->calcularPuntaje()));
+    ui->labelPuntajeJugador->setVisible(true);
+    ui->label_JUGADOR->setVisible(true);
+
+    // Actualizar la visibilidad del botón de doblar
+    qDebug() << "Actualizando botón de doblar. Jugador tiene " << manoJugador.size() << " cartas.";
+    actualizarBotonDoblar();
+
+    // Verificar si el jugador tiene BlackJack (21 puntos con solo 2 cartas)
+    if (jugador->calcularPuntaje() == 21 && manoJugador.size() == 2) {
+        turnoCrupier(true);  // Blackjack
+    } else {
+        ui->btnPEDIR->setVisible(true);
+        ui->btnPLANTARSE->setVisible(true);
+    }
 }
+
 void mesa::revelarSegundaCartaCrupier() {
     if (cartaLabelsCrupier.size() > 1) {
         const auto& manoCrupier = crupier->getMano();
         if (manoCrupier.size() > 1) {
-            QString imagenRuta = obtenerRutaImagen(manoCrupier[1]); // Obtener la segunda carta real
-            QPixmap pixmap(imagenRuta);
-
             QLabel* segundaCarta = cartaLabelsCrupier[1]; // Acceder a la segunda carta
-            segundaCarta->setPixmap(pixmap.scaled(100, 100, Qt::KeepAspectRatio)); // Actualizar imagen
+            mostrarCarta(manoCrupier[1], segundaCarta);
         }
     }
 }
 
+// Volver a jugar (reiniciar el juego)
 void mesa::on_btnVolverAJugar_clicked()
 {
-    reiniciarJuego();  // Reinicia el juego
-    ui->labelPuntajeJugador->setVisible(false);
-    ui->labelPuntajeCroupier->setVisible(false);
-    // Ocultar el mensaje y el botón "Volver a jugar" hasta que el jugador esté listo
-    ui->labelResultado->clear();  // Limpiar el mensaje
-    ui->btnVolverAJugar->setVisible(false);  // Ocultar el botón
+    qDebug() << "Volviendo a jugar - Saldo actual: " << jugador->getSaldo();
+    
+    // Ocultar elementos de resultado
     ui->labelResultado->setVisible(false);
+    ui->btnVolverAJugar->setVisible(false);
+    
+    // Reiniciar el juego
+    reiniciarJuego();
+    
+    // Mostrar elementos para apostar
     ui->btnApostar->setVisible(true);
-    ui->labelmakeBet->setVisible(false);
-    ui->btnREPARTIR->setVisible(true);
+    ui->lineEditApuesta->setVisible(true);
+    
+    // Actualizar la interfaz
+    actualizarSaldoYapuesta();
+    
+    qDebug() << "Juego reiniciado - Saldo: " << jugador->getSaldo() << ", Apuesta: " << jugador->getApuesta();
+}
+
+// Nuevo método para mostrar una carta en un label (elimina código duplicado)
+void mesa::mostrarCarta(const Carta& carta, QLabel* label) {
+    if (label) {
+        QString imagenRuta = obtenerRutaImagen(carta);
+        QPixmap pixmap(imagenRuta);
+        if (!pixmap.isNull()) {
+            label->setPixmap(pixmap.scaled(80, 120, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            label->setVisible(true);
+        }
+    }
+}
+
+// Implementación del nuevo método para actualizar la visibilidad del botón de doblar
+void mesa::actualizarBotonDoblar() {
+    QPushButton* btnDoblar = findChild<QPushButton*>("btnDOBLAR");
+    if (!btnDoblar) return;
+    
+    // El botón de doblar solo debe estar visible si el jugador puede doblar su apuesta
+    // (tiene exactamente 2 cartas y suficiente saldo)
+    if (jugador->puedeDobleApuesta()) {
+        btnDoblar->setVisible(true);
+        qDebug() << "Botón DOBLAR visible: jugador puede doblar apuesta";
+    } else {
+        btnDoblar->setVisible(false);
+        qDebug() << "Botón DOBLAR oculto: jugador no puede doblar apuesta";
+        qDebug() << "Cartas: " << jugador->getMano().size() << ", Saldo: " << jugador->getSaldo() << ", Apuesta: " << jugador->getApuesta();
+    }
+}
+
+// Implementación del slot para el botón de doblar
+void mesa::on_btnDOBLAR_clicked() {
+    qDebug() << "Botón DOBLAR clickeado. Jugador tiene " << jugador->getMano().size() << " cartas y apuesta " << jugador->getApuesta();
+    
+    if (jugador->puedeDobleApuesta()) {
+        // Actualizar la interfaz para mostrar la nueva apuesta
+        jugador->doblarApuesta();
+        actualizarSaldoYapuesta();
+        
+        qDebug() << "Apuesta doblada a: " << jugador->getApuesta();
+        
+        // El jugador recibe exactamente una carta más
+        jugador->pedirCarta(*mazo);
+        actualizarMano();
+        
+        qDebug() << "Carta adicional repartida. Jugador ahora tiene " << jugador->getMano().size() << " cartas";
+        
+        // El jugador se planta automáticamente después de doblar
+        jugador->plantarse();
+        
+        // Pasar el turno al crupier
+        turnoCrupier(false);
+        
+        // Ocultar los botones de juego
+        ui->btnPEDIR->setVisible(false);
+        ui->btnPLANTARSE->setVisible(false);
+        
+        QPushButton* btnDoblar = findChild<QPushButton*>("btnDOBLAR");
+        if (btnDoblar) {
+            btnDoblar->setVisible(false);
+        }
+    } else {
+        qDebug() << "ERROR: No se puede doblar la apuesta";
+    }
+}
+
+// Método para iniciar la animación de reparto de cartas
+void mesa::repartirCartasConAnimacion() {
+    // Reiniciar las manos antes de repartir nuevas cartas
+    jugador->reiniciarMano();
+    crupier->reiniciarMano();
+    
+    // Barajar el mazo antes de repartir
+    mazo->barajar();
+    
+    // Reiniciar la etapa de reparto
+    etapaReparto = 0;
+    
+    // Limpiar las cartas anteriores
+    for (auto label : cartaLabels) {
+        label->deleteLater();
+    }
+    cartaLabels.clear();
+    
+    for (auto label : cartaLabelsCrupier) {
+        label->deleteLater();
+    }
+    cartaLabelsCrupier.clear();
+    
+    // Mostrar los labels de jugador y crupier
+    ui->label_JUGADOR->setVisible(true);
+    ui->label_CROUPIER->setVisible(true);
+    
+    qDebug() << "Iniciando reparto de cartas. Jugador tiene " << jugador->getMano().size() << " cartas.";
+    
+    // Iniciar el timer para repartir las cartas con un intervalo de 1 segundo
+    timerReparto->start(1000);
+}
+
+// Slot que se ejecuta cada vez que el timer hace timeout
+void mesa::repartirSiguienteCarta() {
+    switch (etapaReparto) {
+        case 0: // Primera carta al crupier (visible)
+            crupier->pedirCarta(*mazo);
+            mostrarPrimeraCartaCrupier();
+            ui->labelPuntajeCroupier->setText("Puntaje: " + QString::number(crupier->getMano().at(0).getValor()));
+            ui->labelPuntajeCroupier->setVisible(true);
+            break;
+            
+        case 1: // Primera carta al jugador
+            jugador->pedirCarta(*mazo);
+            actualizarMano();
+            break;
+            
+        case 2: // Segunda carta al crupier (oculta)
+            crupier->pedirCarta(*mazo);
+            mostrarPrimeraCartaCrupier(); // Actualiza mostrando la carta oculta
+            break;
+            
+        case 3: // Segunda carta al jugador
+            jugador->pedirCarta(*mazo);
+            actualizarMano();
+            
+            // Verificar si el jugador tiene BlackJack
+            if (jugador->calcularPuntaje() == 21) {
+                timerReparto->stop();
+                turnoCrupier(true);  // Blackjack
+            } else {
+                // Detener el timer y mostrar los botones de juego
+                timerReparto->stop();
+                
+                // Mostrar los botones para continuar el juego
+                ui->btnPEDIR->setVisible(true);
+                ui->btnPLANTARSE->setVisible(true);
+                
+                // Verificar si el jugador puede doblar (tiene 2 cartas)
+                actualizarBotonDoblar();
+            }
+            break;
+    }
+    
+    // Incrementar la etapa para la próxima carta
+    etapaReparto++;
+}
+
+// Este método ya no es necesario, pero lo mantenemos vacío por compatibilidad
+void mesa::on_btnREPARTIR_clicked() {
+    // Método vacío - la funcionalidad se ha movido a on_btnApostar_clicked
 }
 

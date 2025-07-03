@@ -5,17 +5,26 @@
 
 class Carta {
 public:
+    // Enumeración para los palos de las cartas
+    enum class Palo {
+        CORAZONES,
+        DIAMANTES,
+        TREBOLES,
+        PICAS
+    };
+
     // Constructor
-    Carta(int valor, const std::string &palo);
+    Carta(int valor, Palo palo);
 
     int getValor() const;
-    std::string getPalo() const;
+    Palo getPalo() const;
+    std::string getPaloStr() const;
 
     std::string toString() const;
 
 private:
     int valor;
-    std::string palo;
+    Palo palo;
 };
 
 #endif // CARTA_H
